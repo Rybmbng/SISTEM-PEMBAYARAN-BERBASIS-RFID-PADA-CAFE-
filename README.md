@@ -11,6 +11,7 @@ Untuk Context Diagram seperti ini
 ![2](https://github.com/user-attachments/assets/5643abc2-2b17-4fec-900b-c1cc7ef199f1)
 
 Untuk Cara Kerja :
+
 1.Pada saat ada orang yang melewati pintu, sensor infrared 1 akan mendeteksi orang tersebut dan motor DC akan membuka pintu cafe secara otomatis. 
 
 2.LCD 16x2 akan menampilkan selamat datang ketika ada orang terdeteksi oleh sensor infrared.

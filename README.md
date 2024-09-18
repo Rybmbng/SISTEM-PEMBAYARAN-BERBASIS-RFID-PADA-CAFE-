@@ -1,11 +1,4 @@
-Ini adalah sebuah project yang memudah cafe anda dalam pelayanan dalam cafe.
-
-1.Alat dapat bekerja dengan baik karena dapat menjadi sebuah solusi terhadap masalah kemacetan karena antrean pemesanan di cafe.
-2.RFID dapat bekerja dengan baik sebagai metode pembayaran menggunakan card member ketika antrian pembayaran cash sedang padat.
-3.Sensor infrared berfungsi dengan baik pada saat membaca objek yang akan memasuki cafe sehingga motor DC dapat membuka dan menutup pintu secara otomatis.
-4.LCD dapat menampilkan ucapan selamat datang dan selamat jalan kepada konsumen dengan baik.
-5.Website dapat menampilkan pilihan menu makanan dan minuman yang tersedia di cafe.
-6.Buzzer dan LED dapat bekerja dengan baik menjadi indikator apabila pembayaran gagal.
+Proyek  ini bertujuan untuk membangun sebuah rancangan dari implementasi sistem pembayaran berbasis RFID pada cafe dengan menggunakan website berbasis arduino dan nodemcu dimana arduino uno R3 sebagai pengontrol utamanya. Sistem pembayaran ini memanfaatkan RFID sebagai metode pembayaran dan website sebagai media pemilihan menu pada cafe. Pada sistem ini terdapat dua sensor infrared yang akan mendeteksi pelanggan yang keluar masuk dari cafe. Dimana ketika ada pelanggan yang terdeteksi, maka motor dc akan membuka pintu secara otomatis dan LCD akan menampilkan teks. Kemudian untuk sistem pemilihan menu dan tempat duduk dapat dilakukan melalui website. Untuk pembayaran makanan dan minuman bisa dilakukan melalui cash atau card member dengan melakukan scan ke RFID. Jika terjadi kegagalan dalam pembayaran, maka led akan menyala dan buzzer akan berbunyi. Pada cafe juga terdapat sistem otomatisasi penghidupan lampu dan kipas ketika orang pertama yang memasuki cafe maka akan terdeteksi oleh sensor ultrasonik, dan untuk mematikannya bisa menggunakan button yang sudah tersedia.
 
 Untuk Context Diagram seperti ini
 ![2](https://github.com/user-attachments/assets/5643abc2-2b17-4fec-900b-c1cc7ef199f1)

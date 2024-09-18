@@ -1,0 +1,267 @@
+<?php
+
+    if(isset($_GET['id'])){
+      $id = @$_GET['id'];
+      $sql = "delete from tb_user where id_user='$id'";
+      $result = mysqli_query($conn,$sql);
+      if($result){
+      $id=0;
+      header("Location:?admin=karyawan");
+      }else{
+      echo "<script> alert('Data gagal dihapus') </script>"; 
+      }
+      }
+
+    if($_POST['submit'])  {
+    $username = $_POST['username'];
+    $nama_lengkap = $_POST['nama_lengkap'];
+    $password = md5($_POST['password']);
+    $email = $_POST['email'];
+    $nohp = $_POST['nohp'];
+    $hp = "+62".$nohp;
+    $alamat = $_POST['alamat'];
+		$level = $_POST['level'];  
+    $tentang = $_POST['tentang'];
+    $ekstensi_diperbolehkan	= array('png','jpg');
+    $nama = $_FILES['file']['name'  ];
+    $x = explode('.', $nama);
+    $ekstensi = strtolower(end($x));
+    $ukuran	= $_FILES['file']['size'];
+    $file_tmp = $_FILES['file']['tmp_name'];	   
+    $id_user;
+    if($level=="admin"){
+      $id_user = "A_";
+    } else
+    if($level=="kasir"){
+      $id_user = "K_";
+    } else
+    if($level=="pelanggan"){
+      $id_user = "P_";
+    }
+    $id = $id_user.$username;
+
+    if(in_array($ekstensi, $ekstensi_diperbolehkan) === true){
+      if($ukuran < 1044070){			
+        move_uploaded_file($file_tmp, 'assets/profile/' .$username.$nama);
+        $gambar = $username.$nama;
+         $query = mysqli_query($conn, "INSERT INTO tb_user SET id_user='$id',username='$username',password='$password',nama_lengkap='$nama_lengkap',alamat='$alamat',email='$email',nomor_hp='$hp',
+         gambar='$gambar',level='$level',about='$tentang'");
+        if($query){
+          $username = "";
+          $id = "";
+          $tentang = "";
+          $nohp = "";
+          $email = "";
+          $nama = "";
+          $_POST['password'] = "";
+          $nama_lengkap = "";
+          $level = "";
+          $alamat = "";
+          echo "( </alert></script>FILE BERHASIL DI UPLOAD </alert></script>)"; 
+          header("Location:?admin=karyawan");
+        }else{
+          echo "(<script><alert>GAGAL MENGUPLOAD GAMBAR </alert></script>)";
+        }
+      }else{
+        echo "(<script><alert>UKURAN FILE TERLALU BESAR </alert></script>)";
+      }
+    }else{
+      echo "(<script><alert>EKSTENSI FILE YANG DI UPLOAD TIDAK DI PERBOLEHKAN </alert></script>)";
+    }
+}else{
+  // echo "(<script><alert>ADA ERROR</alert></script>)";
+}
+
+
+$sql = "SELECT * FROM tb_user WHERE level='pelanggan'";
+$result = mysqli_query($conn,$sql);
+
+
+?>
+
+<main id="main" class="main">
+    <div class="pagetitle">
+      <h1>Pelanggan Rumah Singgah</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="?admin=">Home</a></li>
+          <li class="breadcrumb-item">Users</li>
+          <li class="breadcrumb-item active">Pelanggan</li>
+        </ol>
+      </nav>
+    </div>
+    
+    <section class="section">
+      <div class="row">
+
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title"><h5>
+               <table class="table table">
+                <thead>
+                  <tr>
+                  <table class="table table-striped" >
+                      <thead center>
+                        <tr>
+                          <th>
+                            Status
+                          </th>
+                          <th>
+                            Foto
+                          </th>
+                          <th>
+                            Level
+                          </th>
+                          <th>
+                            Nama Lengkap
+                          </th>
+                          <th>
+                            Nomor HP
+                          </th>
+                          <th>
+                            Detail
+                          </th>
+                          <th>
+                            Hapus
+                          </th>
+                        </tr>
+                      </thead>
+                  </tr>
+                </thead>
+                <?php
+                 $no = 1;
+                    error_reporting(0);
+                    while ($data = mysqli_fetch_array($result)){
+                      $username = $data['username'];
+                      $sqld = mysqli_query($conn,"SELECT *FROM status WHERE username ='$username'");
+                      $ceksesi = mysqli_fetch_array($sqld);
+                      if($ceksesi['session']=="aktif"){
+                        $session="<span class='logged-in'>●</span>";
+                      }else{
+                        $session="<span class='logged-out'>●</span>";
+                      }
+                      ?>  
+                <tbody>    
+                  <tr>
+                          <th class="text-center">
+                          <?php echo $session ?>
+                          </th>
+                          <td class="py-1">
+                            <img src="assets/profile/<?php echo $data['gambar'] ?>" height='50px' width='50px' style="border-radius:70px"/>
+                          </td>
+                          <td>
+                          <?php echo $data['level'] ?>
+                          </td>
+                          <td>
+                            <?php echo $data['nama_lengkap'] ?>
+                          </td>
+                          <td>
+                            <?php echo $data['nomor_hp'] ?>
+                          </td>
+                          <td>
+                          <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                          <button type="button" class="btn btn-primary"><a style="color:white" href="?admin=profiled&id=<?php echo $data['id_user'] ?>" > Detail </a></button>
+                          </div>
+                          </td>
+                          <td>
+                          <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                          <button type="button" class="btn btn-danger"><a style="color:white" href="?admin=karyawan&id=<?php echo $data['id_user'] ?>" > Hapus </a></button>
+                          </div>
+                          </td>
+                </tr>
+                </tbody>
+                <?php } ?>
+              </table>
+             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <button class="btn btn-primary me-md-2" data-bs-toggle="modal" data-bs-target="#exampleModal"> Tambah User <i class="bi bi-plus"></i></button>
+        </div>
+        </div>
+        </div>
+      </div>
+    </section>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Tambah Users</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+         <div class="card">
+            <div class="card-body">
+            <form method="post" enctype="multipart/form-data" class="row g-4">
+                <div class="col-md-6">
+                  <label for="validationDefault01" class="form-label">ID USER</label>
+                  <input type="text" class="form-control" placeholder="Sudah Terisi Otomatis" id="validationDefault01"  Readonly>
+                </div>
+                <div class="col-md-6">
+                  <label for="validationDefault04" name="kategori" class="form-label">Level</label>
+                  
+                  <select id="inputState" class="form-select" name="level" required>
+                        <option value="pelanggan">Pelanggan</option>   
+                    </select> 
+                </div>  
+                <div class="col-md-6">
+                  <label for="menu" class="form-label">Username</label>
+                  <div class="input-group">
+                    <input type="text" class="form-control" name="username" id="menu" aria-describedby="inputGroupPrepend2" required>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label for="validationDefault03" class="form-label">Nama Lengkap</label>
+                  <input type="text" class="form-control" name="nama_lengkap" id="validationDefault03" required>
+                </div>
+                <div class="col-md-6">
+                  <label for="menu" class="form-label">Password</label>
+                  <div class="input-group">
+                    <input type="password" class="form-control" name="password" id="menu" aria-describedby="inputGroupPrepend2" required>
+                  </div>
+                </div> 
+                <div class="col-md-6">
+                  <label for="menu" class="form-label">Email</label>
+                  <div class="input-group">
+                    <input type="email" class="form-control" name="email" id="menu" aria-describedby="inputGroupPrepend2" required>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label for="menu" class="form-label">Nomor HP</label>
+                  <div class="input-group">
+                  <span class="input-group-text" id="inputGroupPrepend">+62</span>
+                    <input type="number" class="form-control" name="nohp" id="menu" aria-describedby="inputGroupPrepend2" required>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label for="validationDefault05" class="form-label">Alamat</label>
+                  <input name="alamat" placeholder="Masukkan Alamat" id="validationDefault05" class="form-control" style="height: 100px"></input>
+                </div>
+                
+                <div class="col-md-6">
+                  <label for="validationDefault05" class="form-label">Deskripsi</label>
+                  <textarea name="tentang" placeholder="Silahkan Isi Keterangan Menu" id="validationDefault05" class="form-control" style="height: 100px"></textarea>
+                </div>
+                
+                <div class="col-md-6">
+                  <label for="validationDefault05" class="form-label">Gambar Menu</label>
+                  <input type="file" name="file" class="form-control" id="validationDefault05" required>
+                </div>
+                
+                <div class="col-12">
+                  <button type="submit" name="submit" value="submit" class="btn btn-primary" >Tambah</button>
+                </div>
+
+              </form>
+              <!-- End Browser Default Validation -->
+
+            </div>
+          </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+  </main><!-- End #main -->
+
+
+  
